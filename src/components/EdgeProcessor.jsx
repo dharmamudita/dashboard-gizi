@@ -14,8 +14,14 @@ export default function EdgeProcessor({ user }) {
       if (docSnap.exists()) {
         const data = docSnap.data();
         
-        // Alat ESP32 akan mengirimkan status="SAVE_TRIGGERED" ketika bidan memencet tombol Simpan di alat
+        // Alat ESP32 akan mengirimkan status="SAVE_TRIGGERED" ketika bidan memencet tombol Simpan
         if (data.status === "SAVE_TRIGGERED" && data.selectedNama) {
+          
+          // CEK KEAMANAN MULTI-USER: Jika data ini bukan ditujukan untuk email Bunda yang sedang login, ABAIKAN!
+          if (data.selectedEmail && data.selectedEmail !== user.email) {
+            return; // Web browser Bunda lain akan diam saja
+          }
+
           try {
             console.log("Menerima instruksi simpan dari ESP32 untuk anak:", data.selectedNama);
             

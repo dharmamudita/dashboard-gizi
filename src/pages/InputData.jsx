@@ -21,7 +21,7 @@ export default function InputData({ user }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (profiles.length >= 2) return alert("Batas Maksimal: 1 Akun hanya dapat memiliki 2 profil anak.");
+    if (profiles.length >= 30) return alert("Batas Maksimal: 1 Akun hanya dapat memiliki 30 profil anak untuk tahap testing.");
     if (!formData.nama || !formData.tanggalLahir) return alert("Lengkapi data!");
     setIsSubmitting(true);
     try {
@@ -80,8 +80,8 @@ export default function InputData({ user }) {
                 </label>
               </div>
             </div>
-            <button type="submit" disabled={isSubmitting || profiles.length >= 2} className="w-full justify-center rounded-md bg-teal-600 px-3 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 disabled:opacity-50 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
-              {profiles.length >= 2 ? 'Kuota Maksimal (2 Anak) Tercapai' : isSubmitting ? 'Mendaftarkan...' : 'Daftarkan Anak ke Database'}
+            <button type="submit" disabled={isSubmitting || profiles.length >= 30} className="w-full justify-center rounded-md bg-teal-600 px-3 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 disabled:opacity-50 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors">
+              {profiles.length >= 30 ? 'Kuota Maksimal (30 Anak) Tercapai' : isSubmitting ? 'Mendaftarkan...' : 'Daftarkan Anak ke Database'}
             </button>
           </form>
         </div>

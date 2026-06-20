@@ -3,7 +3,7 @@ import { useLocation, Link } from 'react-router-dom';
 import StatusEmoji, { StatusEmojiMini } from '../components/StatusEmoji';
 import { statusKeseluruhan } from '../utils/zScoreCalculator';
 import { db } from '../firebase';
-import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, query, where, orderBy, limit, getDocs, onSnapshot } from 'firebase/firestore';
 
 export default function HasilPerhitungan({ user }) {
   const location = useLocation();

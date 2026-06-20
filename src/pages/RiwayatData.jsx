@@ -133,57 +133,120 @@ export default function RiwayatData({ user }) {
             <p className="mt-1 text-sm text-gray-500">Mulai ukur dan pantau perkembangan anak Bunda sekarang.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-white">
-                <tr>
-                  {['Nama Anak', 'TB (cm)', 'BB (kg)', 'LK (cm)', 'Suhu', 'Z-Score (TB/U)', 'Status Gizi', 'Tanggal', ''].map((h, i) => (
-                    <th key={i} className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filtered.map(r => {
-                  const b = getBadge(r.hasilStunting?.kategori);
-                  const z = r.hasil?.zScoreTBU ?? 0;
-                  return (
-                    <tr key={r.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-800 font-bold text-xs mr-3">
-                            {r.nama?.charAt(0)}
+          <>
+            {/* Tampilan Layar Besar (Tabel) */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-white">
+                  <tr>
+                    {['Nama Anak', 'TB (cm)', 'BB (kg)', 'LK (cm)', 'Suhu', 'Z-Score (TB/U)', 'Status Gizi', 'Tanggal', ''].map((h, i) => (
+                      <th key={i} className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {filtered.map(r => {
+                    const b = getBadge(r.hasilStunting?.kategori);
+                    const z = r.hasil?.zScoreTBU ?? 0;
+                    return (
+                      <tr key={r.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="flex-shrink-0 h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-800 font-bold text-xs mr-3">
+                              {r.nama?.charAt(0)}
+                            </div>
+                            <div className="text-sm font-semibold text-gray-900">{r.nama}</div>
                           </div>
-                          <div className="text-sm font-semibold text-gray-900">{r.nama}</div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.tinggiBadan}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.beratBadan}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.lingkarKepala}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.suhuTubuh}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`text-sm font-bold ${z >= -2 ? 'text-emerald-600' : z >= -3 ? 'text-amber-600' : 'text-red-600'}`}>
+                            {z > 0 ? '+' : ''}{z}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${b.bg} ${b.c}`}>
+                            {b.l}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{fmt(r.timestamp)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <button onClick={() => del(r.id)} className="text-gray-400 hover:text-red-600 p-1.5 rounded hover:bg-red-50 transition-colors" title="Hapus Data">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Tampilan Layar HP (Kartu) */}
+            <div className="block md:hidden divide-y divide-gray-200">
+              {filtered.map(r => {
+                const b = getBadge(r.hasilStunting?.kategori);
+                const z = r.hasil?.zScoreTBU ?? 0;
+                return (
+                  <div key={r.id} className="p-4 bg-white hover:bg-gray-50 transition-colors">
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-800 font-bold text-sm mr-3">
+                          {r.nama?.charAt(0)}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.tinggiBadan}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.beratBadan}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.lingkarKepala}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{r.suhuTubuh}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-bold text-gray-900">{r.nama}</div>
+                          <div className="text-xs text-gray-500">{fmt(r.timestamp)}</div>
+                        </div>
+                      </div>
+                      <button onClick={() => del(r.id)} className="text-gray-400 hover:text-red-600 p-2 rounded hover:bg-red-50 transition-colors" title="Hapus Data">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                      </button>
+                    </div>
+                    
+                    <div className="grid grid-cols-4 gap-2 mb-3">
+                      <div className="bg-gray-50 p-2 rounded text-center border border-gray-100">
+                        <div className="text-[10px] text-gray-500 font-medium">TB</div>
+                        <div className="font-bold text-gray-900 text-sm">{r.tinggiBadan}</div>
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded text-center border border-gray-100">
+                        <div className="text-[10px] text-gray-500 font-medium">BB</div>
+                        <div className="font-bold text-gray-900 text-sm">{r.beratBadan}</div>
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded text-center border border-gray-100">
+                        <div className="text-[10px] text-gray-500 font-medium">LK</div>
+                        <div className="font-bold text-gray-900 text-sm">{r.lingkarKepala}</div>
+                      </div>
+                      <div className="bg-gray-50 p-2 rounded text-center border border-gray-100">
+                        <div className="text-[10px] text-gray-500 font-medium">Suhu</div>
+                        <div className="font-bold text-gray-900 text-sm">{r.suhuTubuh}</div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                      <div>
+                        <div className="text-[10px] uppercase font-bold text-gray-500 mb-0.5">Z-Score (TB/U)</div>
                         <span className={`text-sm font-bold ${z >= -2 ? 'text-emerald-600' : z >= -3 ? 'text-amber-600' : 'text-red-600'}`}>
                           {z > 0 ? '+' : ''}{z}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${b.bg} ${b.c}`}>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] uppercase font-bold text-gray-500 mb-1">Status Gizi</div>
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold ${b.bg} ${b.c}`}>
                           {b.l}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{fmt(r.timestamp)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <button onClick={() => del(r.id)} className="text-gray-400 hover:text-red-600 p-1.5 rounded hover:bg-red-50 transition-colors" title="Hapus Data">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
     </div>

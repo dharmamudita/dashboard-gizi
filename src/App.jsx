@@ -9,6 +9,7 @@ import InputData from './pages/InputData';
 import HasilPerhitungan from './pages/HasilPerhitungan';
 import RiwayatData from './pages/RiwayatData';
 import Login from './pages/Login';
+import EdgeProcessor from './components/EdgeProcessor';
 
 function AppLayout({ children, user, onLogout }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -23,6 +24,7 @@ function AppLayout({ children, user, onLogout }) {
 
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
+      <EdgeProcessor user={user} />
       {sidebarOpen && <div className="fixed inset-0 z-20 bg-gray-900/50 lg:hidden" onClick={() => setSidebarOpen(false)} />}
       <Sidebar isOpen={sidebarOpen} close={() => setSidebarOpen(false)} />
 

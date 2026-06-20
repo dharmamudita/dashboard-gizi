@@ -6,6 +6,7 @@ export default function RiwayatData({ user }) {
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
+  const [childFilter, setChildFilter] = useState('all');
   const [sort, setSort] = useState('newest');
   const [loading, setLoading] = useState(true);
 
@@ -35,7 +36,10 @@ export default function RiwayatData({ user }) {
     return () => unsubscribe();
   }, [user]);
 
+  const uniqueChildren = Array.from(new Set(data.map(d => d.nama))).filter(Boolean);
+
   const filtered = data
+    .filter(i => childFilter === 'all' || i.nama === childFilter)
     .filter(i => (i.nama || '').toLowerCase().includes(search.toLowerCase()))
     .filter(i => filter === 'all' || i.hasilStunting?.kategori === filter)
     .sort((a, b) => {
@@ -111,14 +115,20 @@ export default function RiwayatData({ user }) {
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:border-teal-500 sm:text-sm"
             />
           </div>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <select value={filter} onChange={e => setFilter(e.target.value)} className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md shadow-sm">
+          <div className="flex gap-2 w-full sm:w-auto flex-wrap sm:flex-nowrap">
+            <select value={childFilter} onChange={e => setChildFilter(e.target.value)} className="block w-full sm:w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md shadow-sm font-semibold">
+              <option value="all">Semua Anak</option>
+              {uniqueChildren.map(name => (
+                <option key={name} value={name}>{name}</option>
+              ))}
+            </select>
+            <select value={filter} onChange={e => setFilter(e.target.value)} className="block w-full sm:w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md shadow-sm">
               <option value="all">Semua Status</option>
               <option value="normal">Normal</option>
               <option value="stunted">Stunted</option>
               <option value="severely_stunted">Severely Stunted</option>
             </select>
-            <select value={sort} onChange={e => setSort(e.target.value)} className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md shadow-sm">
+            <select value={sort} onChange={e => setSort(e.target.value)} className="block w-full sm:w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-teal-500 focus:border-teal-500 sm:text-sm rounded-md shadow-sm">
               <option value="newest">Paling Baru</option>
               <option value="oldest">Paling Lama</option>
               <option value="name">Nama A-Z</option>

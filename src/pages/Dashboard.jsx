@@ -17,6 +17,7 @@ export default function Dashboard({ user }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [childFilter, setChildFilter] = useState('all');
+  const [profiles, setProfiles] = useState([]);
 
   useEffect(() => {
     if (!user?.email) return;
@@ -42,8 +43,17 @@ export default function Dashboard({ user }) {
     return () => unsubscribe();
   }, [user]);
 
-  // Ekstrak nama anak-anak yang terdaftar
-  const uniqueChildren = Array.from(new Set(data.map(d => d.nama))).filter(Boolean);
+  useEffect(() => {
+    if (!user?.email) return;
+    const q = query(collection(db, "anak"), where("userEmail", "==", user.email));
+    const unsub = onSnapshot(q, (snapshot) => {
+      setProfiles(snapshot.docs.map(doc => doc.data().nama));
+    });
+    return () => unsub();
+  }, [user]);
+
+  // Ekstrak nama anak-anak yang terdaftar (gabungan dari pendaftaran & riwayat)
+  const uniqueChildren = Array.from(new Set([...profiles, ...data.map(d => d.nama)])).filter(Boolean);
 
   // Filter data berdasarkan anak yang dipilih
   const filteredData = childFilter === 'all' ? data : data.filter(d => d.nama === childFilter);

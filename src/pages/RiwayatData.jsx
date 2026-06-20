@@ -9,6 +9,7 @@ export default function RiwayatData({ user }) {
   const [childFilter, setChildFilter] = useState('all');
   const [sort, setSort] = useState('newest');
   const [loading, setLoading] = useState(true);
+  const [profiles, setProfiles] = useState([]);
 
   useEffect(() => {
     if (!user?.email) return;
@@ -36,7 +37,16 @@ export default function RiwayatData({ user }) {
     return () => unsubscribe();
   }, [user]);
 
-  const uniqueChildren = Array.from(new Set(data.map(d => d.nama))).filter(Boolean);
+  useEffect(() => {
+    if (!user?.email) return;
+    const q = query(collection(db, "anak"), where("userEmail", "==", user.email));
+    const unsub = onSnapshot(q, (snapshot) => {
+      setProfiles(snapshot.docs.map(doc => doc.data().nama));
+    });
+    return () => unsub();
+  }, [user]);
+
+  const uniqueChildren = Array.from(new Set([...profiles, ...data.map(d => d.nama)])).filter(Boolean);
 
   const filtered = data
     .filter(i => childFilter === 'all' || i.nama === childFilter)
